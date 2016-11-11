@@ -29,36 +29,16 @@ Text Domain: finds-org-uk
 // Block direct access to plugin file
 defined( 'ABSPATH' ) or exit("Plugin must not be accessed directly.");
 
-// Register a shortcode [find] to display artefact records in posts
-add_shortcode( 'find', 'fouaac_display_artefact' );
+// Register a shortcode [artefact] to display an artefact record in posts
+add_shortcode( 'artefact', 'fouaac_display_artefact' );
 
-// Register an action hook to display artefact records for use in templates
-add_action( 'fouaac_display_artefact' , 'fouaac_display_artefact' );
-
-/**
- * Displays an artefact record specified by a URL.
- *
- * Extracts the attribute 'url', retrieves the json version
- * of the corresponding finds.org.uk record and displays selected information
- * and the image from the record.
- *
- * @since 1.0.0
- *
- * @param array $attr attributes
- */
 function fouaac_display_artefact( $attr ) {
-    $url = $attr['url'];
-    $json_url = $attr['url'] . '/format/json/';
-    $img = 'https://finds.org.uk/images/bmorris/medium/2012%20T431.jpg';
-    $response = wp_remote_get( $json_url );
-    $json = wp_remote_retrieve_body( $response );
-    $json_object = json_decode( $json );
-    $find_record = $json_object->record[0];
-    $label = $find_record->old_findID;
-    $img_filename = $find_record->filename;
-    echo $url;
-    echo '<p><a href="' . $url . '">' . $label . '</a></p>';
-    echo '<img src=' . $img . ' />';
-    echo utf8_uri_encode( $img_filename );
+    // Make sure the controller class is loaded
+    require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
+    $artefact_controller = new Fouaac_Artefact_Controller( $attr );
+    $artefact_controller->display_artefact();
 }
+
+
+
 
