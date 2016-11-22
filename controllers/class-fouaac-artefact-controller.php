@@ -86,6 +86,11 @@ class Fouaac_Artefact_Controller
             $json_importer = new Fouaac_Json_Importer( $this->get_url() );
             $artefact_data = $json_importer->import_json();
             $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
+            $caption = new Fouaac_Caption_Creator( 'artefact',
+                $artefact,
+                $this->get_caption(),
+                $this->get_caption_text() );
+            $this->new_caption_text = $caption->create_caption();
 
         }
 
