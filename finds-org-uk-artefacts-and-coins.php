@@ -43,6 +43,15 @@ function fouaac_load_style() {
 add_shortcode( 'artefact', 'fouaac_display_artefact' );
 
 function fouaac_display_artefact( $attr ) {
+    // Inserts default attribute values
+    $attributes = shortcode_atts( array(
+        'url' => '',
+        'caption' => 'auto',
+        'caption-text' => '',
+        'figure-size' => 'medium'
+    ),
+        $attr, 'artefact'
+    );
     // Loads controller class
     require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
     $artefact_controller = new Fouaac_Artefact_Controller( $attributes );
