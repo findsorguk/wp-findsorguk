@@ -92,6 +92,8 @@ class Fouaac_Artefact_Controller
                 $this->get_caption_text() );
             $this->new_caption_text = $caption->create_caption();
 
+            get_template_part('fouaac-artefact-figure', 'single');
+
         }
 
     }
