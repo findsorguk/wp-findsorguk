@@ -12,29 +12,21 @@
 class Fouaac_Artefact_Controller
 {
 
-    private $attributes;
+    // Shortcode attributes
     private $url;
+    private $caption;
+    private $caption_text;
+    private $figure_size;
+    private $new_caption_text;
 
-    public function __construct( $attr ) {
-        // Check if the attributes are an array
-        // If no attributes are included in the shortcode then $attr is the empty string
-        if ( is_array( $attr )) {
-            $this->attributes = $attr;
-            // Check if a URL has been specified
-            if ( array_key_exists( 'url' , $attr ) ) {
-                $this->url = esc_url_raw( $attr['url'], array( 'https' ) );
-            }
 
-        }
+    public function __construct( $attributes ) {
+        var_dump($attributes);
+        $this->url = esc_url_raw( $attributes['url'], array( 'https' ) );
+        $this->caption = sanitize_text_field( $attributes['caption'] );
+        $this->caption_text = sanitize_text_field( $attributes['caption-text'] );
+        $this->figure_size = sanitize_text_field( $attributes['figure-size'] );
         $this->load_dependencies();
-
-    }
-
-    /**
-     * @return mixed
-     */
-    public function get_attributes() {
-        return $this->attributes;
     }
 
     /**
@@ -44,9 +36,40 @@ class Fouaac_Artefact_Controller
         return $this->url;
     }
 
+    /**
+     * @return string
+     */
+    public function get_caption() {
+        return $this->caption;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_caption_text() {
+        return $this->caption_text;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_figure_size() {
+        return $this->figure_size;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_new_caption_text() {
+        return $this->new_caption_text;
+    }
+
+
     private function load_dependencies() {
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-json-importer.php');
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'models/class-fouaac-artefact.php');
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'models/class-fouaac-artefact.php' );
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-json-importer.php' );
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-caption-creator.php' );
 
     }
 
@@ -64,19 +87,9 @@ class Fouaac_Artefact_Controller
             $artefact_data = $json_importer->import_json();
             $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
 
-            $img = 'https://finds.org.uk/images/bmorris/medium/2012%20T431.jpg';
-            $label = $artefact->get_old_find_id();
-            $img_filename = $artefact->get_filename();
-
-            echo esc_url( $this->get_url() );
-            echo '<p><a href="' . esc_url( $this->get_url() ) . '">' . $label . '</a></p>';
-            echo '<img src=' . $img . ' />';
-            echo utf8_uri_encode( $img_filename );
-
         }
 
     }
-
 
 
 }
