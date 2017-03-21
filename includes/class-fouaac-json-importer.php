@@ -18,7 +18,7 @@ class Fouaac_Json_Importer
      */
     public function __construct( $url ) {
         $this->url = $url;
-        $this->json_url = $this->create_json_url( $this->url );
+        $this->json_url = $this->create_json_url();
 
     }
 
@@ -36,7 +36,7 @@ class Fouaac_Json_Importer
         return $this->json_url;
     }
 
-    private function create_json_url( $url ) {
+    private function create_json_url() {
         return $this->get_url() . '/format/json';
 
     }
