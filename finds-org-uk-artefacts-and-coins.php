@@ -46,7 +46,7 @@ function fouaac_display_artefact( $attr ) {
     // Inserts default attribute values
     $attributes = shortcode_atts( array(
         'url' => '',
-        'caption' => 'auto',
+        'caption-option' => 'auto',
         'caption-text' => '',
         'figure-size' => 'medium'
     ),

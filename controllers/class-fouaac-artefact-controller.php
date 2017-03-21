@@ -14,16 +14,16 @@ class Fouaac_Artefact_Controller
 
     // Shortcode attributes
     private $url;
-    private $caption;
+    private $caption_option;
     private $caption_text;
     private $figure_size;
-    private $new_caption_text;
+    private $auto_caption_text;
 
 
     public function __construct( $attributes ) {
         var_dump($attributes);
         $this->url = esc_url_raw( $attributes['url'], array( 'https' ) );
-        $this->caption = sanitize_text_field( $attributes['caption'] );
+        $this->caption_option = sanitize_text_field( $attributes['caption-option'] );
         $this->caption_text = sanitize_text_field( $attributes['caption-text'] );
         $this->figure_size = sanitize_text_field( $attributes['figure-size'] );
         $this->load_dependencies();
@@ -39,8 +39,8 @@ class Fouaac_Artefact_Controller
     /**
      * @return string
      */
-    public function get_caption() {
-        return $this->caption;
+    public function get_caption_option() {
+        return $this->caption_option;
     }
 
     /**
@@ -60,16 +60,26 @@ class Fouaac_Artefact_Controller
     /**
      * @return string
      */
-    public function get_new_caption_text() {
-        return $this->new_caption_text;
+    public function get_auto_caption_text() {
+        return $this->auto_caption_text;
     }
 
+    /**
+     *
+     */
+    public function set_auto_caption_text( $auto_caption_text ) {
+        $this->auto_caption_text = $auto_caption_text;
+    }
 
     private function load_dependencies() {
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'models/class-fouaac-artefact.php' );
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-json-importer.php' );
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-caption-creator.php' );
+
+    }
+
+    private function load_template_dependency() {
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
 
     }
 
@@ -88,10 +98,12 @@ class Fouaac_Artefact_Controller
             $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
             $caption = new Fouaac_Caption_Creator( 'artefact',
                 $artefact,
-                $this->get_caption(),
-                $this->get_caption_text() );
-            $this->new_caption_text = $caption->create_caption();
+                $this->get_caption_option(),
+                $this->get_caption_text()
+            );
+            $this->set_auto_caption_text( $caption->create_caption() );
 
+            $this->load_template_dependency();
             get_template_part('fouaac-artefact-figure', 'single');
 
         }
