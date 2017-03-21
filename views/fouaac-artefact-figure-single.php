@@ -14,7 +14,7 @@
         West Yorkshire Archaeology Advisory Service <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a>
     </small>
     <figcaption class="fouaac-caption-text wp-caption-text">
-        <?php echo $this->get_caption_text_display(); ?>
+        <?php esc_html_e( $this->get_caption_text_display() ); ?>
         (<a href="https://finds.org.uk/database/artefacts/record/id/506003">SWYOR-F139C5</a>)
 
     </figcaption>
