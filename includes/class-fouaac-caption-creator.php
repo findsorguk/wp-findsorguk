@@ -62,25 +62,31 @@ class Fouaac_Caption_Creator
     }
 
     private function create_artefact_caption() {
-        switch ( $this->get_caption_option() ) {
-            case 'none':
-                return '';
-        break;
-            case 'manual':
-                $caption = $this->trim_string( $this->get_caption_text() );
-                return $caption;
-        break;
-            case 'auto':
-                $text = sprintf("%s %s",
-                    $this->get_data_object()->get_broad_period(),
-                    $this->get_data_object()->get_object_type()
-                );
-                $caption = $this->title_string( $text );
-                return $caption;
-        break;
-            default:
-                return '';
+        // If there is no caption-text provided, create the caption according to the caption-option
+        if ( empty( $this->get_caption_text() )  ) {
+            switch ( $this->get_caption_option() ) {
+                case 'none':
+                    return '';
+                break;
+                case 'auto':
+                    $text = sprintf("%s %s",
+                        $this->get_data_object()->get_broad_period(),
+                        $this->get_data_object()->get_object_type()
+                    );
+                    $caption = $this->title_string( $text );
+                    return $caption;
+                break;
+                default:
+                    return '';
+            }
+            // If there is any caption-text provided, this overrides the caption-options and is displayed
+        } elseif ( ! (empty( $this->get_caption_text() ) ) ) {
+            $caption = $this->trim_string( $this->get_caption_text() );
+            return $caption;
+        } else {
+            return '';
         }
+
 
     }
 
