@@ -17,7 +17,7 @@ class Fouaac_Artefact_Controller
     private $caption_option;
     private $caption_text;
     private $figure_size;
-    private $auto_caption_text;
+    private $caption_text_display;
 
 
     public function __construct( $attributes ) {
@@ -60,15 +60,15 @@ class Fouaac_Artefact_Controller
     /**
      * @return string
      */
-    public function get_auto_caption_text() {
-        return $this->auto_caption_text;
+    public function get_caption_text_display() {
+        return $this->caption_text_display;
     }
 
     /**
      *
      */
-    public function set_auto_caption_text( $auto_caption_text ) {
-        $this->auto_caption_text = $auto_caption_text;
+    public function set_caption_text_display( $caption_text_display ) {
+        $this->caption_text_display = $caption_text_display;
     }
 
     private function load_dependencies() {
@@ -101,7 +101,7 @@ class Fouaac_Artefact_Controller
                 $this->get_caption_option(),
                 $this->get_caption_text()
             );
-            $this->set_auto_caption_text( $caption->create_caption() );
+            $this->set_caption_text_display( $caption->create_caption() );
 
             $this->load_template_dependency();
             get_template_part('fouaac-artefact-figure', 'single');
