@@ -189,25 +189,44 @@ class Fouaac_Artefact_Controller
      */
     public function display_artefact() {
         $url_valid = $this->validate_url( $this->get_url() );
+        //if the URL is valid
         if ( $url_valid ) {
             $json_importer = new Fouaac_Json_Importer( $this->get_url() );
             $artefact_data = $json_importer->import_json();
-            $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
-            $caption = new Fouaac_Caption_Creator( 'artefact',
-                $artefact,
-                $this->get_caption_option(),
-                $this->get_caption_text()
-            );
-            $this->set_caption_text_display( $caption->create_caption() );//
-            $this->load_artefact_template_dependency();
-            get_template_part('fouaac-artefact-figure', 'single');
+            //and there is a 200 OK response from the finds.org.uk server
+            if ( $artefact_data['record'] === 'artefact' ) {
+                $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
+                $caption = new Fouaac_Caption_Creator( 'artefact',
+                    $artefact,
+                    $this->get_caption_option(),
+                    $this->get_caption_text()
+                );
+                $this->set_caption_text_display( $caption->create_caption() );//
+                $this->load_artefact_template_dependency();
+                get_template_part('fouaac-artefact-figure', 'single');
+            } elseif ( $artefact_data['record'] === 'error' ) {
+                $this->set_error_message( $artefact_data['error message'] );
+                $this->display_error();
+            }
 
         } else {
-            $this->load_error_template_dependency();
-            get_template_part('fouaac-error', '');
+            $this->display_error();
         }
 
     }
+
+    /**
+     * Displays an error message when things have gone wrong.
+     *
+     * @since 1.0.0
+     *
+     */
+    public function display_error() {
+        $this->load_error_template_dependency();
+        get_template_part('fouaac-error', '');
+
+    }
+
     /**
      * Cleans up the finds.org.uk URL provided by the user in the shortcode.
      *

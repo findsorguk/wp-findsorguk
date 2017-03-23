@@ -12,6 +12,7 @@ class Fouaac_Json_Importer
 {
     private $url;
     private $json_url;
+    private $response_timeout = 5; // 5 second default timeout to wait for json response
 
     /**
      * Fouaac_Json_Importer constructor.
@@ -42,13 +43,50 @@ class Fouaac_Json_Importer
     }
 
     public function import_json() {
-        $response = wp_remote_get( $this->get_json_url() );
-        $json_body = wp_remote_retrieve_body( $response );
-        $json_object = json_decode( $json_body, true );
-        $json_as_php_array = $json_object['record'][0];
-        return $json_as_php_array;
-
+        //get the response from the url within the timeout time
+        $response = wp_remote_get( $this->get_json_url(),
+            array('timeout' => $this->response_timeout)
+        );
+        //if there is a wp error in the get request itself (like a timeout)
+        if ( is_wp_error( $response )) {
+            $error_message = $response->get_error_message();
+            echo "There was a problem fetching the JSON data: {$error_message}";
+        } else {
+            $response_code = wp_remote_retrieve_response_code( $response );
+            //if the response code is 200 OK then decode the json into a php array
+            if ($response_code == 200) {
+                $json_body = wp_remote_retrieve_body( $response );
+                $json_object = json_decode( $json_body, true );
+                $json_as_php_array = $json_object[ 'record' ][ 0 ];
+                $json_as_php_array['record'] = 'artefact';
+                return $json_as_php_array;
+            } else {
+                return $this->report_response_error( $response_code );
+            }
+        }
     }
+
+    public function report_response_error( $response_code ) {
+        $error = array( 'record' => 'error' );
+        $error['response_code'] = $response_code;
+        switch ( $response_code ) {
+            case 401:
+                $error['error message'] = "The artefact record you have specified is not 
+                                            on public display so cannot be used 
+                                            (error code {$response_code}).";
+                break;
+            case 404:
+                $error['error message'] = "The artefact record you have specified cannot be found  
+                                            (error code {$response_code}).";
+                break;
+            default:
+                $error['error message'] = "There was some problem fetching the artefact record you specified. 
+                                            The finds.org.uk database might be down 
+                                            (error code {$response_code}).";
+        }
+        return $error;
+    }
+
 
 
 }
