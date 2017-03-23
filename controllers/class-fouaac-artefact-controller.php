@@ -6,23 +6,84 @@
  * Description.
  *
  * @since 1.0.0
- * @TODO documentation
- * @TODO abstract html generation to a view
+ * @TODO caching
+ * @TODO user interface
  */
 class Fouaac_Artefact_Controller
 {
+    /**
+     * URLs provided by the user should use the https protocol.
+     *
+     * @since 1.0.0
+     * @var string FOUACC_REQUIRED_SCHEME Required URL scheme.
+     */
+    const FOUACC_REQUIRED_SCHEME = 'https';
 
-    // Shortcode attributes
+    /**
+     * Shortcode attributes.
+     */
+    /**
+     * Shortcode attribute: URL of a finds.org.uk record.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $url URL of a finds.org.uk record.
+     */
     private $url;
+    /**
+     * Shortcode attribute: whether the caption displays or not.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $caption_option Caption option.
+     */
     private $caption_option;
+    /**
+     * Shortcode attribute: caption text provided by the user.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $caption_text Caption text.
+     */
     private $caption_text;
+    /**
+     * Shortcode attribute: figure size to display.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $figure_size Figure size.
+     */
     private $figure_size;
+
+    /**
+     * Caption text to display. May be automated or manually provided by the user.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $caption_text_display Caption text to display.
+     */
     private $caption_text_display;
 
+    /**
+     * Error message to be displayed to the user.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var string $error_message Error message.
+     */
+    private $error_message;
 
+    /**
+     * Constructor for Fouaac_Artefact_Controller class.
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     * @param array $attributes Shortcode attributes.
+     */
     public function __construct( $attributes ) {
         var_dump($attributes);
-        $this->url = esc_url_raw( $attributes['url'], array( 'https' ) );
+        $this->url = $this->clean_up_url( $attributes['url'] );
         $this->caption_option = sanitize_text_field( $attributes['caption-option'] );
         $this->caption_text = sanitize_text_field( $attributes['caption-text'] );
         $this->figure_size = sanitize_text_field( $attributes['figure-size'] );
@@ -71,28 +132,64 @@ class Fouaac_Artefact_Controller
         $this->caption_text_display = $caption_text_display;
     }
 
+    /**
+     * @return string
+     */
+    public function get_error_message() {
+        return $this->error_message;
+    }
+
+    /**
+     *
+     */
+    public function set_error_message( $error ) {
+        $this->error_message = $error;
+    }
+
+    /**
+     * Loads class dependencies for the controller.
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     */
     private function load_dependencies() {
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'models/class-fouaac-artefact.php' );
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-json-importer.php' );
         require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-fouaac-caption-creator.php' );
-
-    }
-
-    private function load_template_dependency() {
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
-
     }
 
     /**
-     * Displays an artefact record specified by a URL.
+     * Loads template dependency for the single figure artefact template.
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     */
+    private function load_artefact_template_dependency() {
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
+    }
+
+    /**
+     * Loads template dependency for the error template.
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     */
+    private function load_error_template_dependency() {
+        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-error.php' );
+    }
+
+    /**
+     * Displays an artefact record specified by a finds.org.uk URL.
      *
      * @since 1.0.0
      *
-     * @param array $attr Attributes.
      */
     public function display_artefact() {
-        // If no URL is provided nothing is displayed
-        if ( ! ( empty( $this->get_url() ) ) ) {
+        $url_valid = $this->validate_url( $this->get_url() );
+        if ( $url_valid ) {
             $json_importer = new Fouaac_Json_Importer( $this->get_url() );
             $artefact_data = $json_importer->import_json();
             $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
@@ -101,14 +198,113 @@ class Fouaac_Artefact_Controller
                 $this->get_caption_option(),
                 $this->get_caption_text()
             );
-            $this->set_caption_text_display( $caption->create_caption() );
-
-            $this->load_template_dependency();
+            $this->set_caption_text_display( $caption->create_caption() );//
+            $this->load_artefact_template_dependency();
             get_template_part('fouaac-artefact-figure', 'single');
 
+        } else {
+            $this->load_error_template_dependency();
+            get_template_part('fouaac-error', '');
         }
 
     }
+    /**
+     * Cleans up the finds.org.uk URL provided by the user in the shortcode.
+     *
+     * Note that this function has been named clean_up_url() to avoid confusion
+     * with the deprecated WordPress function clean_url()
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     * @param string $url URL of the finds.org.uk record.
+     * @return string $clean_url Cleaned URL.
+     */
+    private function clean_up_url( $url ) {
+        //escape the url safely and filter for acceptable protocols
+        //note that esc_url_raw() returns an empty string if some other protocol is used
+        $clean_url = esc_url_raw( $url , array('http', self::FOUACC_REQUIRED_SCHEME) );
+        //remove trailing slashes
+        $clean_url = rtrim( $clean_url , '/' );
+        //if the scheme is http, replace with https
+        if ( strncmp( $clean_url, 'http://', 7) === 0 ) {
+            $clean_url = substr( $clean_url, 7);
+            $clean_url = self::FOUACC_REQUIRED_SCHEME . '://' . $clean_url;
 
+        }
+        return $clean_url;
+
+    }
+
+    /**
+     * Validates the finds.org.uk URL provided by the user in the shortcode.
+     *
+     * Checks if the URL provides a correct scheme, host, path and numerical record ID that match the
+     * form expected for a valid finds.org.uk URL.
+     *
+     * @since 1.0.0
+     * @access private
+     *
+     * @param string $url URL of the finds.org.uk record.
+     * @return bool Valid or not.
+     */
+    private function validate_url( $url ) {
+        $required_scheme = self::FOUACC_REQUIRED_SCHEME;
+        //@TODO replace with finds.org.uk in production
+        $required_host = 'beta.finds.org.uk';
+        $required_path_tokens = array('database', 'artefacts', 'record', 'id');
+
+        if ( empty( $url ) ) {
+            $this->set_error_message('Your URL is not valid or no URL was provided. 
+                                        Please check your URL and try again.');
+            return false;
+
+        } else {
+            //tokenise the url
+            $scheme = parse_url($url, PHP_URL_SCHEME);
+            $host = parse_url($url, PHP_URL_HOST);
+            $path = parse_url($url, PHP_URL_PATH);
+
+            //check if the scheme matches https
+            if ( ! ( $scheme === $required_scheme ) ) {
+                $this->set_error_message( "Your URL should start with {$required_scheme}://. 
+                                            Please check your URL and try again." );
+                return false;
+            }
+
+            //check the host matches finds.org.uk
+            if ( ! ( $host === $required_host ) ) {
+                $this->set_error_message( "Your URL is not valid. 
+                                            The website should be '{$required_host}', 
+                                            but we found '{$host}'. 
+                                            Please check your URL and try again." );
+                return false;
+            }
+
+            //split the path into tokens and check the parts
+            //note that this will throw an error for records from the hoards module
+            $path_tokens = explode( "/", $path );
+            $number_of_tokens_to_check = sizeof( $required_path_tokens );
+            for ( $i = 1; $i <= $number_of_tokens_to_check; $i++ ) {
+                if ( ! ( $path_tokens[ $i ] === $required_path_tokens[ $i - 1 ] ) ) {
+                    $this->set_error_message( "Your URL is not valid. 
+                                                Please check the spelling of your URL and try again." );
+                    return false;
+
+                }
+            }
+
+            $record_id = basename( $path );
+            if ( ! ( ctype_digit( $record_id ) ) ) {
+                $this->set_error_message( "Your URL is not valid.
+                                            There's a problem with the record ID at the end of the URL.
+                                            Please check your URL and try again." );
+                return false;
+            }
+
+        }
+
+        return true;
+    }
 
 }
