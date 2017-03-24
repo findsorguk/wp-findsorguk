@@ -50,7 +50,7 @@ class Fouaac_Json_Importer
         //if there is a wp error in the get request itself (like a timeout)
         if ( is_wp_error( $response )) {
             $error_message = $response->get_error_message();
-            echo "There was a problem fetching the JSON data: {$error_message}";
+            return $this->report_error( $error_message );
         } else {
             $response_code = wp_remote_retrieve_response_code( $response );
             //if the response code is 200 OK then decode the json into a php array
@@ -61,28 +61,28 @@ class Fouaac_Json_Importer
                 $json_as_php_array['record'] = 'artefact';
                 return $json_as_php_array;
             } else {
-                return $this->report_response_error( $response_code );
+                return $this->report_error( $response_code );
             }
         }
     }
 
-    public function report_response_error( $response_code ) {
+    public function report_error( $error_info ) {
         $error = array( 'record' => 'error' );
-        $error['response_code'] = $response_code;
-        switch ( $response_code ) {
+        $error['error_info'] = $error_info;
+        switch ( $error_info ) {
             case 401:
                 $error['error message'] = "The artefact record you have specified is not 
                                             on public display so cannot be used 
-                                            (error code {$response_code}).";
+                                            (error {$error_info}).";
                 break;
             case 404:
                 $error['error message'] = "The artefact record you have specified cannot be found  
-                                            (error code {$response_code}).";
+                                            (error {$error_info}).";
                 break;
             default:
                 $error['error message'] = "There was some problem fetching the artefact record you specified. 
                                             The finds.org.uk database might be down 
-                                            (error code {$response_code}).";
+                                            (error {$error_info}).";
         }
         return $error;
     }
