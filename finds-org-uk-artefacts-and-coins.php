@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Text Domain: finds-org-uk
 */
 
-/*  Copyright 2016  Mary Chester-Kadwell  (email : mchester-kadwell@britishmuseum.org)
+/*  Copyright 2017  Mary Chester-Kadwell  (email : mchester-kadwell@britishmuseum.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License version 3 as published by
