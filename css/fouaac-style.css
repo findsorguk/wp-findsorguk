@@ -1,6 +1,6 @@
-.fouaac-figure {
-    width: 219px;
-
+.fouaac-figure img[class*="fouaac-"] {
+    display: block;
+    margin:0 auto;
 }
 
 small.fouaac-copyright {

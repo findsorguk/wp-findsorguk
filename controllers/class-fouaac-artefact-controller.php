@@ -12,12 +12,21 @@
 class Fouaac_Artefact_Controller
 {
     /**
-     * URLs provided by the user should use the https protocol.
+     * URLs should use the https protocol.
      *
      * @since 1.0.0
      * @var string FOUACC_REQUIRED_SCHEME Required URL scheme.
      */
     const FOUACC_REQUIRED_SCHEME = 'https';
+
+    /**
+     * URLs should use this host
+     *
+     * @since 1.0.0
+     * @TODO replace with development/production config
+     * @var string FOUACC_REQUIRED_SCHEME Required URL scheme.
+     */
+    const FOUACC_REQUIRED_HOST = 'finds.org.uk';
 
     /**
      * Shortcode attributes.
@@ -65,6 +74,15 @@ class Fouaac_Artefact_Controller
     private $caption_text_display;
 
     /**
+     * Artefact record object containing all the data from the json response.
+     *
+     * @since 1.0.0
+     * @access private
+     * @var object $artefact_record Artefact record object.
+     */
+    private $artefact_record;
+
+    /**
      * Error message to be displayed to the user.
      *
      * @since 1.0.0
@@ -82,7 +100,6 @@ class Fouaac_Artefact_Controller
      * @param array $attributes Shortcode attributes.
      */
     public function __construct( $attributes ) {
-        var_dump($attributes);
         $this->url = $this->clean_up_url( $attributes['url'] );
         $this->caption_option = sanitize_text_field( $attributes['caption-option'] );
         $this->caption_text = sanitize_text_field( $attributes['caption-text'] );
@@ -130,6 +147,20 @@ class Fouaac_Artefact_Controller
      */
     public function set_caption_text_display( $caption_text_display ) {
         $this->caption_text_display = $caption_text_display;
+    }
+
+    /**
+     * @return object
+     */
+    public function get_artefact_record() {
+        return $this->artefact_record;
+    }
+
+    /**
+     *
+     */
+    public function set_artefact_record( $artefact_object ) {
+        $this->artefact_record = $artefact_object;
     }
 
     /**
@@ -195,13 +226,13 @@ class Fouaac_Artefact_Controller
             $artefact_data = $json_importer->import_json();
             //and there is a 200 OK response from the finds.org.uk server
             if ( $artefact_data['record'] === 'artefact' ) {
-                $artefact = new Fouaac_Artefact( $artefact_data, $this->get_url() );
+                $this->set_artefact_record( new Fouaac_Artefact( $artefact_data, $this->get_url() ) );
                 $caption = new Fouaac_Caption_Creator( 'artefact',
-                    $artefact,
+                    $this->get_artefact_record(),
                     $this->get_caption_option(),
                     $this->get_caption_text()
                 );
-                $this->set_caption_text_display( $caption->create_caption() );//
+                $this->set_caption_text_display( $caption->create_caption() );
                 $this->load_artefact_template_dependency();
                 get_template_part('fouaac-artefact-figure', 'single');
             } elseif ( $artefact_data['record'] === 'error' ) {
@@ -269,8 +300,7 @@ class Fouaac_Artefact_Controller
      */
     private function validate_url( $url ) {
         $required_scheme = self::FOUACC_REQUIRED_SCHEME;
-        //@TODO replace with finds.org.uk in production
-        $required_host = 'beta.finds.org.uk';
+        $required_host = self::FOUACC_REQUIRED_HOST;
         $required_path_tokens = array('database', 'artefacts', 'record', 'id');
 
         if ( empty( $url ) ) {
