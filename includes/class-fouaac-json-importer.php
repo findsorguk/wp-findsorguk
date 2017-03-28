@@ -81,7 +81,7 @@ class Fouaac_Json_Importer
                 break;
             default:
                 $error['error message'] = "There was some problem fetching the artefact record you specified. 
-                                            The finds.org.uk database might be down 
+                                            You may have a connection problem or the finds.org.uk database might be down 
                                             (error {$error_info}).";
         }
         return $error;

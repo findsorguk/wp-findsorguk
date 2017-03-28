@@ -198,7 +198,10 @@ class Fouaac_Artefact_Controller
      *
      */
     private function load_artefact_template_dependency() {
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
+        ob_start();
+        include ( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-artefact-figure-single.php' );
+        return ob_get_clean();
+
     }
 
     /**
@@ -209,7 +212,10 @@ class Fouaac_Artefact_Controller
      *
      */
     private function load_error_template_dependency() {
-        require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-error.php' );
+        ob_start();
+        include ( plugin_dir_path( dirname( __FILE__ ) ) . 'views/fouaac-error.php' );
+        return ob_get_clean();
+
     }
 
     /**
@@ -233,15 +239,14 @@ class Fouaac_Artefact_Controller
                     $this->get_caption_text()
                 );
                 $this->set_caption_text_display( $caption->create_caption() );
-                $this->load_artefact_template_dependency();
-                get_template_part('fouaac-artefact-figure', 'single');
+                return $this->load_artefact_template_dependency();
             } elseif ( $artefact_data['record'] === 'error' ) {
                 $this->set_error_message( $artefact_data['error message'] );
-                $this->display_error();
+                return $this->display_error();
             }
 
         } else {
-            $this->display_error();
+            return $this->display_error();
         }
 
     }
@@ -253,8 +258,7 @@ class Fouaac_Artefact_Controller
      *
      */
     public function display_error() {
-        $this->load_error_template_dependency();
-        get_template_part('fouaac-error', '');
+        return $this->load_error_template_dependency();
 
     }
 
