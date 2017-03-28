@@ -69,7 +69,7 @@ function fouaac_display_artefact( $attr ) {
     // Loads controller class
     require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
     $artefact_controller = new Fouaac_Artefact_Controller( $attributes );
-    $artefact_controller->display_artefact();
+    return $artefact_controller->display_artefact();
 
 }
 
