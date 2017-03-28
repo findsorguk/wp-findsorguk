@@ -232,20 +232,29 @@ class Fouaac_Artefact_Controller
             $artefact_data = $json_importer->import_json();
             //and there is a 200 OK response from the finds.org.uk server
             if ( $artefact_data['record'] === 'artefact' ) {
+                //create a new artefact record from the data
                 $this->set_artefact_record( new Fouaac_Artefact( $artefact_data, $this->get_url() ) );
-                $caption = new Fouaac_Caption_Creator( 'artefact',
-                    $this->get_artefact_record(),
-                    $this->get_caption_option(),
-                    $this->get_caption_text()
-                );
-                $this->set_caption_text_display( $caption->create_caption() );
-                return $this->load_artefact_template_dependency();
-            } elseif ( $artefact_data['record'] === 'error' ) {
+                //if there is an image available
+                if ( !is_null( $this->get_artefact_record()->get_image_directory() ) ) {
+                    //create a caption
+                    $caption = new Fouaac_Caption_Creator('artefact',
+                        $this->get_artefact_record(),
+                        $this->get_caption_option(),
+                        $this->get_caption_text()
+                    );
+                    $this->set_caption_text_display($caption->create_caption());
+                    //display the artefact figure
+                    return $this->load_artefact_template_dependency();
+                } else { //if there is no image available
+                    $this->set_error_message( "No image is available on this record." );
+                    return $this->display_error();
+                }
+            } elseif ( $artefact_data['record'] === 'error' ) { //if there is no valid json response
                 $this->set_error_message( $artefact_data['error message'] );
                 return $this->display_error();
             }
 
-        } else {
+        } else { //if the URL is invalid
             return $this->display_error();
         }
 
