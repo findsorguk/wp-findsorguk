@@ -156,8 +156,12 @@ class Fouaac_Artefact
      */
     private function lookup_license_acronym( $image_license )
     {
-        $acronyms = $this->get_cc_license_acronyms();
-        return $acronyms[ $image_license ];
+        if ( ! is_null ( $image_license ) ) {
+            $acronyms = $this->get_cc_license_acronyms();
+            return $acronyms[$image_license];
+        } else {
+            return null;
+        }
     }
 
 
