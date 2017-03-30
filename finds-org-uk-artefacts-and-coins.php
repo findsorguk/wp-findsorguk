@@ -47,8 +47,9 @@ add_shortcode( 'artefact', 'fouaac_display_artefact' );
  *
  * Shortcode attributes:
  * 'id' is the record id of the finds.org.uk artefact record - found on the end of the record URL.
- * 'caption-option' can be 'none' to turn off the caption; defaults to 'auto' which displays an automatic caption.
- * 'caption-text' is the desired manual caption text and overrides any 'caption-option' options.
+ * 'caption-option' can be 'none' to turn off the caption; defaults to 'auto' which displays 'caption-text'
+ *  or an automatic caption if no 'caption-text' is provided.
+ * 'caption-text' is the desired manual caption text.
  * 'figure-size' is the display size of the image; can be 'small', 'medium' or 'large'; defaults to 'medium'.
  * @TODO implement 'figure-size'
  *
