@@ -22,7 +22,7 @@
     </small>
     <figcaption class="fouaac-caption-text wp-caption-text">
         <?php esc_html_e( $this->get_caption_text_display() ); ?>
-        (<a href="<?php esc_html_e($this->get_artefact_record()->get_url());?>"><?php esc_html_e( $this->get_artefact_record()->get_old_find_id() );?></a>)
+        (<a href="https://finds.org.uk/database/artefacts/record/id/<?php esc_html_e($this->get_artefact_record()->get_id());?>"><?php esc_html_e( $this->get_artefact_record()->get_old_find_id() );?></a>)
     </figcaption>
 
 </figure>

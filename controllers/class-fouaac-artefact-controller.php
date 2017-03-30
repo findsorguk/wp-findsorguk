@@ -36,9 +36,9 @@ class Fouaac_Artefact_Controller
      *
      * @since 1.0.0
      * @access private
-     * @var string $url URL of a finds.org.uk record.
+     * @var string $record_id URL of a finds.org.uk record.
      */
-    private $url;
+    private $record_id;
     /**
      * Shortcode attribute: whether the caption displays or not.
      *
@@ -100,7 +100,7 @@ class Fouaac_Artefact_Controller
      * @param array $attributes Shortcode attributes.
      */
     public function __construct( $attributes ) {
-        $this->url = $this->clean_up_url( $attributes['url'] );
+        $this->record_id = $this->clean_id( $attributes['id'] );
         $this->caption_option = sanitize_text_field( $attributes['caption-option'] );
         $this->caption_text = sanitize_text_field( $attributes['caption-text'] );
         $this->figure_size = sanitize_text_field( $attributes['figure-size'] );
@@ -110,8 +110,8 @@ class Fouaac_Artefact_Controller
     /**
      * @return string
      */
-    public function get_url() {
-        return $this->url;
+    public function get_record_id() {
+        return $this->record_id;
     }
 
     /**
@@ -225,15 +225,15 @@ class Fouaac_Artefact_Controller
      *
      */
     public function display_artefact() {
-        $url_valid = $this->validate_url( $this->get_url() );
-        //if the URL is valid
-        if ( $url_valid ) {
-            $json_importer = new Fouaac_Json_Importer( $this->get_url() );
+        $record_id_valid = $this->validate_record_id( $this->get_record_id() );
+        //if the record id is valid
+        if ( $record_id_valid ) {
+            $json_importer = new Fouaac_Json_Importer( $this->get_record_id() );
             $artefact_data = $json_importer->import_json();
             //and there is a 200 OK response from the finds.org.uk server
             if ( $artefact_data['record'] === 'artefact' ) {
                 //create a new artefact record from the data
-                $this->set_artefact_record( new Fouaac_Artefact( $artefact_data, $this->get_url() ) );
+                $this->set_artefact_record( new Fouaac_Artefact( $artefact_data ) );
                 //if there is an image available
                 if ( !is_null( $this->get_artefact_record()->get_image_directory() ) ) {
                     //create a caption
@@ -254,14 +254,14 @@ class Fouaac_Artefact_Controller
                 return $this->display_error();
             }
 
-        } else { //if the URL is invalid
+        } else { //if the record id is invalid
             return $this->display_error();
         }
 
     }
 
     /**
-     * Displays an error message when things have gone wrong.
+     * Loads a template to display an error message when things have gone wrong.
      *
      * @since 1.0.0
      *
@@ -272,98 +272,52 @@ class Fouaac_Artefact_Controller
     }
 
     /**
-     * Cleans up the finds.org.uk URL provided by the user in the shortcode.
+     * Cleans any trailing slashes from the finds.org.uk record id provided by the user in the shortcode.
      *
-     * Note that this function has been named clean_up_url() to avoid confusion
-     * with the deprecated WordPress function clean_url()
+     * Also makes sure it is a string.
      *
      * @since 1.0.0
      * @access private
      *
-     * @param string $url URL of the finds.org.uk record.
-     * @return string $clean_url Cleaned URL.
+     * @param mixed $id ID of the finds.org.uk record.
+     * @return string $clean_id Cleaned id.
      */
-    private function clean_up_url( $url ) {
-        //escape the url safely and filter for acceptable protocols
-        //note that esc_url_raw() returns an empty string if some other protocol is used
-        $clean_url = esc_url_raw( $url , array('http', self::FOUACC_REQUIRED_SCHEME) );
-        //remove trailing slashes
-        $clean_url = rtrim( $clean_url , '/' );
-        //if the scheme is http, replace with https
-        if ( strncmp( $clean_url, 'http://', 7) === 0 ) {
-            $clean_url = substr( $clean_url, 7);
-            $clean_url = self::FOUACC_REQUIRED_SCHEME . '://' . $clean_url;
-
-        }
-        return $clean_url;
+    private function clean_id( $record_id ) {
+        //cast into a string
+        $string_record_id = (string)$record_id;
+        //remove any trailing slashes
+        $clean_record_id = trim( $string_record_id , '/' );
+        return $clean_record_id;
 
     }
 
     /**
-     * Validates the finds.org.uk URL provided by the user in the shortcode.
+     * Basic validation of the finds.org.uk record id provided by the user in the shortcode.
      *
-     * Checks if the URL provides a correct scheme, host, path and numerical record ID that match the
-     * form expected for a valid finds.org.uk URL.
+     * Checks the id is a string of digits greater than 0 and not a huge number unlikely to be valid.
      *
      * @since 1.0.0
      * @access private
      *
-     * @param string $url URL of the finds.org.uk record.
+     * @param string $record_id URL of the finds.org.uk record.
      * @return bool Valid or not.
      */
-    private function validate_url( $url ) {
-        $required_scheme = self::FOUACC_REQUIRED_SCHEME;
-        $required_host = self::FOUACC_REQUIRED_HOST;
-        $required_path_tokens = array('database', 'artefacts', 'record', 'id');
-
-        if ( empty( $url ) ) {
-            $this->set_error_message('Your URL is not valid or no URL was provided. 
-                                        Please check your URL and try again.');
+    private function validate_record_id( $record_id )
+    {
+        //check if the id is null, 0, "0", or the empty string, if so, error
+        if ( empty( $record_id ) ) {
+            $this->set_error_message('No record ID provided. 
+                                        Please check your "id" attribute and try again.');
             return false;
 
-        } else {
-            //tokenise the url
-            $scheme = parse_url($url, PHP_URL_SCHEME);
-            $host = parse_url($url, PHP_URL_HOST);
-            $path = parse_url($url, PHP_URL_PATH);
-
-            //check if the scheme matches https
-            if ( ! ( $scheme === $required_scheme ) ) {
-                $this->set_error_message( "Your URL should start with {$required_scheme}://. 
-                                            Please check your URL and try again." );
-                return false;
-            }
-
-            //check the host matches finds.org.uk
-            if ( ! ( $host === $required_host ) ) {
-                $this->set_error_message( "Your URL is not valid. 
-                                            The website should be '{$required_host}', 
-                                            but we found '{$host}'. 
-                                            Please check your URL and try again." );
-                return false;
-            }
-
-            //split the path into tokens and check the parts
-            //note that this will throw an error for records from the hoards module
-            $path_tokens = explode( "/", $path );
-            $number_of_tokens_to_check = sizeof( $required_path_tokens );
-            for ( $i = 1; $i <= $number_of_tokens_to_check; $i++ ) {
-                if ( ! ( $path_tokens[ $i ] === $required_path_tokens[ $i - 1 ] ) ) {
-                    $this->set_error_message( "Your URL is not valid. 
-                                                Please check the spelling of your URL and try again." );
-                    return false;
-
-                }
-            }
-
-            $record_id = basename( $path );
-            if ( ! ( ctype_digit( $record_id ) ) ) {
-                $this->set_error_message( "Your URL is not valid.
-                                            There's a problem with the record ID at the end of the URL.
-                                            Please check your URL and try again." );
-                return false;
-            }
-
+        } else if ( ! ctype_digit( $record_id ) ) { //check if the id is a string of digits, if not, error
+            $this->set_error_message( 'There\'s a problem with your record ID (not a number). 
+                                        Please check your "id" attribute and try again.' );
+            return false;
+        } else if ( strlen($record_id) > 6 ) { //check if the id is too long to be a valid id, if so, error
+            $this->set_error_message( 'There\'s a problem with your record ID (number is too long). 
+                                            Please check your "id" attribute and try again.' );
+            return false;
         }
 
         return true;

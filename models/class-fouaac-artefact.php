@@ -10,8 +10,6 @@
  */
 class Fouaac_Artefact
 {
-    private $data;
-    private $url;
     private $id;
     private $old_find_id;
     private $object_type;
@@ -30,37 +28,19 @@ class Fouaac_Artefact
         'Attribution-ShareAlike License' => 'BY-SA'
     );
 
-    public function __construct( array $data, $url )
+    public function __construct( array $data )
     {
-        $this->data = $data;
-        $this->url = $url;
-        $this->id = $this->data[ 'id' ];
-        $this->old_find_id = $this->data[ 'old_findID' ];
-        $this->object_type = $this->data[ 'objecttype' ];
-        $this->broad_period = $this->data[ 'broadperiod' ];
-        $this->filename = $this->data[ 'filename' ];
-        $this->image_directory = $this->data[ 'imagedir' ];
-        $this->image_label = $this->data[ 'imageLabel' ];
-        $this->image_copyright_holder = $this->data[ 'imageCopyrightHolder' ];
-        $this->image_license = $this->data[ 'imageLicense' ];
-        $this->image_license_acronym = $this->lookup_license_acronym( $this->data[ 'imageLicense' ] );
+        $this->id = $data[ 'id' ];
+        $this->old_find_id = $data[ 'old_findID' ];
+        $this->object_type = $data[ 'objecttype' ];
+        $this->broad_period = $data[ 'broadperiod' ];
+        $this->filename = $data[ 'filename' ];
+        $this->image_directory = $data[ 'imagedir' ];
+        $this->image_label = $data[ 'imageLabel' ];
+        $this->image_copyright_holder = $data[ 'imageCopyrightHolder' ];
+        $this->image_license = $data[ 'imageLicense' ];
+        $this->image_license_acronym = $this->lookup_license_acronym( $data[ 'imageLicense' ] );
 
-    }
-
-    /**
-     * @return array
-     */
-    public function get_data()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @return string
-     */
-    public function get_url()
-    {
-        return $this->url;
     }
 
     /**

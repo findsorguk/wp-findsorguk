@@ -46,20 +46,21 @@ add_shortcode( 'artefact', 'fouaac_display_artefact' );
  * Shortcode function for [artefact] shortcode.
  *
  * Shortcode attributes:
- * 'url' is the URL that points to the finds.org.uk artefact record.
+ * 'id' is the record id of the finds.org.uk artefact record - found on the end of the record URL.
  * 'caption-option' can be 'none' to turn off the caption; defaults to 'auto' which displays an automatic caption.
  * 'caption-text' is the desired manual caption text and overrides any 'caption-option' options.
  * 'figure-size' is the display size of the image; can be 'small', 'medium' or 'large'; defaults to 'medium'.
  * @TODO implement 'figure-size'
  *
  * @since 1.0.0
- * @param mixed $attr Shortcode attributes.
+ * @param array $attr Shortcode attributes.
+ * @return string HTML to display
  */
 
 function fouaac_display_artefact( $attr ) {
     // Inserts default attribute values
     $attributes = shortcode_atts( array(
-        'url' => '',
+        'id' => '',
         'caption-option' => 'auto',
         'caption-text' => '',
         'figure-size' => 'medium'

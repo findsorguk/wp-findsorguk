@@ -10,15 +10,15 @@
  */
 class Fouaac_Json_Importer
 {
-    private $url;
+    private $record_id;
     private $json_url;
     private $response_timeout = 5; // 5 second default timeout to wait for json response
 
     /**
      * Fouaac_Json_Importer constructor.
      */
-    public function __construct( $url ) {
-        $this->url = $url;
+    public function __construct( $record_id ) {
+        $this->record_id = (string)$record_id;
         $this->json_url = $this->create_json_url();
 
     }
@@ -26,8 +26,8 @@ class Fouaac_Json_Importer
     /**
      * @return mixed
      */
-    public function get_url() {
-        return $this->url;
+    public function get_record_id() {
+        return $this->record_id;
     }
 
     /**
@@ -38,8 +38,11 @@ class Fouaac_Json_Importer
     }
 
     private function create_json_url() {
-        return $this->get_url() . '/format/json';
-
+        return sprintf('%s://%s/database/artefacts/record/id/%s/format/json',
+            Fouaac_Artefact_Controller::FOUACC_REQUIRED_SCHEME,
+            Fouaac_Artefact_Controller::FOUACC_REQUIRED_HOST,
+            $this->get_record_id()
+        );
     }
 
     public function import_json() {
