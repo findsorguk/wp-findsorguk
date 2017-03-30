@@ -37,7 +37,22 @@
                 title : 'Finds.org.uk Artefacts and Coins Shortcode',
                 image : url + '/fouaac.png',
                 onclick: function () {
-                    ed.windowManager.alert('Button working!');
+                    //ed.windowManager.alert('Button working!');
+                    //Adjust width and height values according to the size of the viewport
+                    var viewport_width = jQuery(window).width();
+                    var viewport_height = jQuery(window).height();
+                    var width = ( 720 < viewport_width ) ? 720 : viewport_width;
+                    var height = ( viewport_height > 600 ) ? 600 : viewport_height;
+                    width = width - 80;
+                    height = height - 84;
+                    //Display a modal ThickBox to display the form for collecting attribute information from the user
+                    tb_show( 'Finds.org.uk Artefacts and Coins Shortcode', '#TB_inline?width=' + width
+                        + '&height=' + height + '&inlineId=fouaac-form' );
+                    // Load the form
+                    jQuery( function() {
+                        // Dynamic load
+                        jQuery('#TB_ajaxContent').load( url + '/fouaac-shortcode-form.php' );
+                    });
 
                 }
             });
