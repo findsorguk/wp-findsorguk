@@ -19,10 +19,15 @@
         <a href="https://creativecommons.org/licenses/<?php _e( strtolower( $this->get_artefact_record()->get_image_license_acronym() ) ); ?>/2.0/">
             <?php _e( $this->get_artefact_record()->get_image_license_acronym() ); ?> 2.0
         </a>
+        <?php if ( 'none' == $this->get_caption_option() ): ?>
+            (<a href="https://finds.org.uk/database/artefacts/record/id/<?php esc_html_e($this->get_artefact_record()->get_id());?>"><?php esc_html_e( $this->get_artefact_record()->get_old_find_id() );?></a>)
+        <?php endif; ?>
     </small>
     <figcaption class="fouaac-caption-text wp-caption-text">
         <?php esc_html_e( $this->get_caption_text_display() ); ?>
+        <?php if ( 'auto' == $this->get_caption_option() ): ?>
         (<a href="https://finds.org.uk/database/artefacts/record/id/<?php esc_html_e($this->get_artefact_record()->get_id());?>"><?php esc_html_e( $this->get_artefact_record()->get_old_find_id() );?></a>)
+        <?php endif; ?>
     </figcaption>
 
 </figure>
