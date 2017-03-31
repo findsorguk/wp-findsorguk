@@ -56,9 +56,58 @@ $shortcode_form.= "<option value='large'>" . 'large' . "</option>";
 $shortcode_form.= "</select>";
 $shortcode_form.= $br;
 $shortcode_form.= $br;
-$shortcode_form.= "<input type='button' id='fouaac_shortcode_submit' value='"."Insert Shortcode"."' />";
+$shortcode_form.= "<input type='button' id='fouaac_shortcode_submit' name='submit' value='"."Insert Shortcode"."' />";
 $shortcode_form.= $p_close;
 $shortcode_form.= "</form>";
 echo $shortcode_form;
 ?>
 
+<script type="text/javascript" charset="utf-8">
+    //<![CDATA[
+    jQuery('#fouaac_shortcode_submit').click(function(){
+
+        // Count the number of words in some text (string)
+        function fouaac_count_words( text ) {
+            return text.split(/[ \t\r\n]/).length;
+        }
+
+        // Get the form fields
+        var values = {};
+        jQuery('#TB_ajaxContent form :input').each(function(index,field) {
+            name = '#TB_ajaxContent form #'+field.id;
+            values[jQuery(name).attr('name')] = jQuery(name).val();
+        });
+
+        var defaults = {'caption-option':'auto',
+            'figure-size':'medium'};
+
+        // Clear the submit button so shortcode does not take its value
+        values['submit'] = null;
+        // Start shortcode text
+        var fouaac_shortcode = '[artefact';
+        // Get the attributes and values
+        for( attributes in values ) {
+            // If not empty or null
+            if( values[attributes] ) {
+                // And the values are not the default values
+                if( values[attributes] != defaults[attributes] ) {
+                    // If the value has more than 1 word
+                    if( fouaac_count_words( String( values[attributes] ) ) > 1 ) {
+                        // Add the key="value" pair with quotes around the value
+                        fouaac_shortcode += ' '+ attributes + '="' + values[attributes]+ '"';
+                    } else {
+                        // Otherwise just add the key=value pair
+                        fouaac_shortcode += ' ' + attributes + '=' + values[attributes];
+                    }
+                }
+            }
+        }
+        // End shortcode text
+        fouaac_shortcode += ']';
+        // Insert shortcode into the active editor
+        tinyMCE.activeEditor.execCommand('mceInsertContent', false, fouaac_shortcode);
+        // Close Thickbox
+        tb_remove();
+    });
+    //]]>
+</script>
