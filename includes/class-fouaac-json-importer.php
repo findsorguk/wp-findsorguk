@@ -69,6 +69,9 @@ class Fouaac_Json_Importer
         }
     }
 
+    /**
+     * @return string
+     */
     public function report_error( $error_info ) {
         $error = array( 'record' => 'error' );
         $error['error_info'] = $error_info;
@@ -80,6 +83,14 @@ class Fouaac_Json_Importer
                 break;
             case 404:
                 $error['error message'] = "The artefact record you have specified cannot be found  
+                                            (error {$error_info}).";
+                break;
+            case 410:
+                $error['error message'] = "The artefact record you have specified has been removed permanently
+                                            (error {$error_info}).";
+                break;
+            case 500:
+                $error['error message'] = "The artefact record you have specified has returned a server error
                                             (error {$error_info}).";
                 break;
             default:
