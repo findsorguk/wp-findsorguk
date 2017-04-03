@@ -1,0 +1,27 @@
+form#fouaac_shortcode p.fouaac_validation_error {
+    color: red;
+}
+
+form#fouaac_shortcode input.fouaac_validation_error {
+    border:1px solid red;
+}
+
+form#fouaac_shortcode fieldset {
+    margin-bottom: 25px;
+}
+
+form#fouaac_shortcode fieldset legend {
+    padding-bottom: 5px;
+    font-size: 18px
+}
+
+form#fouaac_shortcode fieldset label {
+    padding-top: 5px;
+    display:block;
+    font-size: 14px
+}
+
+form#fouaac_shortcode fieldset p {
+    margin: 0;
+    padding: 0
+}

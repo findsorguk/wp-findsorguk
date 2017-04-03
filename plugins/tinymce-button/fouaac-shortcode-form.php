@@ -67,19 +67,6 @@ echo $shortcode_form;
 <script type="text/javascript" charset="utf-8">
     //<![CDATA[
 
-    // If not already inserted, insert css into the head
-    if ( jQuery("style[id='fouaac-form-styles']").length == 0 ) {
-        var css = '<style id="fouaac-form-styles">';
-        css = css + 'form#fouaac_shortcode p.fouaac_validation_error {color: red}';
-        css = css + 'form#fouaac_shortcode input.fouaac_validation_error {border:1px solid red;}';
-        css = css + 'form#fouaac_shortcode fieldset {margin-bottom: 25px}';
-        css = css + 'form#fouaac_shortcode fieldset label {padding-top: 5px; display:block; font-size: 14px}';
-        css = css + 'form#fouaac_shortcode fieldset p {margin: 0; padding: 0}';
-        css = css + 'form#fouaac_shortcode fieldset legend {padding-bottom: 5px; font-size: 18px}';
-        css = css + '</style>';
-        jQuery("head").append( css );
-    }
-
     /**
      * Insert the shortcode when the submit button is clicked
      */

@@ -29,19 +29,81 @@ Text Domain: finds-org-uk
 // Block direct access to plugin file
 defined( 'ABSPATH' ) or exit("Plugin must not be accessed directly.");
 
+/**
+ * ----------
+ * CSS STYLES
+ * ----------
+ */
 
-// Enqueue CSS styles
-add_action( 'wp_enqueue_scripts', 'fouaac_load_style' );
+// Enqueue CSS styles for artefact display
+add_action( 'wp_enqueue_scripts', 'fouaac_load_styles' );
+// Enqueue CSS styles for shortcode popup form display
+add_action( 'admin_enqueue_scripts', 'fouaac_load_form_styles' );
 
 /**
- * Load CSS styles
- *
+ * Load CSS styles for artefact display
  */
-function fouaac_load_style() {
+function fouaac_load_styles() {
     wp_register_style( 'fouaac-style', plugins_url('/css/fouaac-style.css', __FILE__) );
+    wp_enqueue_style( 'fouaac-style');
+}
+
+/**
+ * Load CSS styles for shortcode popup form display
+ */
+function fouaac_load_form_styles() {
+    wp_register_style( 'fouaac-style', plugins_url('/plugins/tinymce-button/fouaac-shortcode-form.css', __FILE__) );
     wp_enqueue_style( 'fouaac-style');
 
 }
+
+/**
+ * -------------------
+ * SHORTCODE: ARTEFACT
+ * -------------------
+ */
+
+// Register a shortcode [artefact] to display an artefact record in posts
+add_shortcode( 'artefact', 'fouaac_display_artefact' );
+
+/**
+ * Shortcode function for [artefact] shortcode.
+ *
+ * Shortcode attributes:
+ * 'id' is the record id of the finds.org.uk artefact record - found on the end of the record URL.
+ * 'caption-option' can be 'none' to turn off the caption; defaults to 'auto' which displays 'caption-text'
+ *  or an automatic caption if no 'caption-text' is provided.
+ * 'caption-text' is the desired manual caption text.
+ * 'figure-size' is the display size of the image; can be 'small', 'medium' or 'large'; defaults to 'medium'.
+ * @TODO implement 'figure-size'
+ *
+ * @since 1.0.0
+ * @param array $attr Shortcode attributes.
+ * @return string HTML to display
+ */
+
+function fouaac_display_artefact( $attr ) {
+    // Insert default attribute values
+    $attributes = shortcode_atts( array(
+        'id' => '',
+        'caption-option' => 'auto',
+        'caption-text' => '',
+        'figure-size' => 'medium'
+    ),
+        $attr, 'artefact'
+    );
+    // Load controller class
+    require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
+    $artefact_controller = new Fouaac_Artefact_Controller( $attributes );
+    return $artefact_controller->display_artefact();
+
+}
+
+/**
+ * -----------------------
+ * SHORTCODE EDITOR BUTTON
+ * -----------------------
+ */
 
 // Add action to fire the TinyMCE editor button code after wp has finished loading
 add_action('init', 'fouaac_shortcode_button');
@@ -80,43 +142,6 @@ function fouaac_register_button( $buttons ) {
     array_push( $buttons, 'fouaac' ); // Button name 'fouaac'
     return $buttons;
 }
-
-// Register a shortcode [artefact] to display an artefact record in posts
-add_shortcode( 'artefact', 'fouaac_display_artefact' );
-
-/**
- * Shortcode function for [artefact] shortcode.
- *
- * Shortcode attributes:
- * 'id' is the record id of the finds.org.uk artefact record - found on the end of the record URL.
- * 'caption-option' can be 'none' to turn off the caption; defaults to 'auto' which displays 'caption-text'
- *  or an automatic caption if no 'caption-text' is provided.
- * 'caption-text' is the desired manual caption text.
- * 'figure-size' is the display size of the image; can be 'small', 'medium' or 'large'; defaults to 'medium'.
- * @TODO implement 'figure-size'
- *
- * @since 1.0.0
- * @param array $attr Shortcode attributes.
- * @return string HTML to display
- */
-
-function fouaac_display_artefact( $attr ) {
-    // Insert default attribute values
-    $attributes = shortcode_atts( array(
-        'id' => '',
-        'caption-option' => 'auto',
-        'caption-text' => '',
-        'figure-size' => 'medium'
-    ),
-        $attr, 'artefact'
-    );
-    // Load controller class
-    require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
-    $artefact_controller = new Fouaac_Artefact_Controller( $attributes );
-    return $artefact_controller->display_artefact();
-
-}
-
 
 
 
