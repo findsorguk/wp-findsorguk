@@ -44,17 +44,18 @@ add_action( 'admin_enqueue_scripts', 'fouaac_load_form_styles' );
  * Load CSS styles for artefact display
  */
 function fouaac_load_styles() {
-    wp_register_style( 'fouaac-style', plugins_url('/css/fouaac-style.css', __FILE__) );
-    wp_enqueue_style( 'fouaac-style');
+    wp_register_style( 'fouaac-display-style', plugins_url('/css/fouaac-style.css', __FILE__) );
+    wp_enqueue_style( 'fouaac-display-style');
 }
 
 /**
  * Load CSS styles for shortcode popup form display
+ *
+ * @TODO This should only load on the specific page it is needed.
  */
 function fouaac_load_form_styles() {
-    wp_register_style( 'fouaac-style', plugins_url('/plugins/tinymce-button/fouaac-shortcode-form.css', __FILE__) );
-    wp_enqueue_style( 'fouaac-style');
-
+    wp_register_style( 'fouaac-form-style', plugins_url('/plugins/tinymce-button/fouaac-shortcode-form.css', __FILE__) );
+    wp_enqueue_style( 'fouaac-form-style');
 }
 
 /**
