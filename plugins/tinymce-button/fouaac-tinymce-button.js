@@ -24,11 +24,9 @@
 (function() {
     tinymce.create('tinymce.plugins.fouaac', {
         /**
-         * Initializes the plugin, this will be executed after the plugin has been created.
-         * This call is done before the editor instance has finished it's initialization so use the onInit event
-         * of the editor instance to intercept that event.
+         * Initialise the plugin.
          *
-         * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
+         * @param {tinymce.Editor} ed Editor instance to initialise the plugin in.
          * @param {string} url Absolute URL to where the plugin is located.
          */
         init : function(ed, url) {
@@ -37,7 +35,6 @@
                 title : 'Finds.org.uk Artefacts and Coins Shortcode',
                 image : url + '/fouaac.png',
                 onclick: function () {
-                    //ed.windowManager.alert('Button working!');
                     //Adjust width and height values according to the size of the viewport
                     var viewport_width = jQuery(window).width();
                     var viewport_height = jQuery(window).height();
@@ -50,8 +47,12 @@
                         + '&height=' + height + '&inlineId=fouaac-form' );
                     // Load the form
                     jQuery( function() {
-                        // Dynamic load
-                        jQuery('#TB_ajaxContent').load( url + '/fouaac-shortcode-form.php' );
+                        // Dynamically load the html and js of the modal
+                        var ajaxContent = jQuery('#TB_ajaxContent');
+                        ajaxContent.load( url + '/fouaac-shortcode-form.php' , function() {
+                                ajaxContent.append("<script type='text/javascript' charset='utf-8' src='"
+                                                    + url + "/fouaac-shortcode-form.js'></script>");
+                        });
                     });
 
                 }
@@ -59,25 +60,11 @@
 
         },
 
-        /**
-         * Creates control instances based in the incoming name. This method is normally not
-         * needed since the addButton method of the tinymce.Editor class is a more easy way of adding buttons
-         * but you sometimes need to create more complex controls like listboxes, split buttons etc then this
-         * method can be used to create those.
-         *
-         * @param {String} n Name of the control to create.
-         * @param {tinymce.ControlManager} cm Control manager to use in order to create new control.
-         * @return {tinymce.ui.Control} New control instance or null if no control was created.
-         */
-        createControl : function(n, cm) {
-            return null;
-        },
 
         /**
-         * Returns information about the plugin as a name/value array.
-         * The current keys are longname, author, authorurl, infourl and version.
+         * Return information about the plugin as an object.
          *
-         * @return {Object} Name/value array containing information about the plugin.
+         * @return {Object} Information about the plugin.
          */
         getInfo : function() {
             return {
