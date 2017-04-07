@@ -26,6 +26,8 @@ jQuery(function ($) {
         // Check if user has entered a valid artefact id
         var recordId = fouaacGetValidRecordId(artefactId, entryType);
         if (recordId) {
+            // Reset any error message
+            fouaacResetErrorMessage();
             // Reset the id value with the new validated value
             values['id'] = recordId;
             // Clear the submit button and entry-type select so shortcode does not take their values
@@ -72,6 +74,8 @@ jQuery(function ($) {
      */
     // If a change is detected in the entry-type selection drop down
     $("select[id='entry-type']").change(function () {
+        // Reset any error message
+        fouaacResetErrorMessage();
         // Get the value of the currently selected option
         var entryType = $("select[id='entry-type']").val();
         var newLabel = '';
@@ -220,6 +224,19 @@ jQuery(function ($) {
         $("#id-explanation").html(message);
         $("#id-explanation").addClass("fouaac-validation-error");
         $("input[name='id']").addClass("fouaac-validation-error");
+    }
+
+    /**
+     * Reset any error messages in the page.
+     *
+     * @return {undefined}
+     */
+    function fouaacResetErrorMessage() {
+        if ($("input[name='id']").hasClass("fouaac-validation-error")) {
+            $("input[name='id']").removeClass("fouaac-validation-error");
+            $("#id-explanation").html('');
+            $("#id-explanation").removeClass("fouaac-validation-error");
+        }
     }
 
     /**
