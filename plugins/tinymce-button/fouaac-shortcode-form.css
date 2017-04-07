@@ -1,27 +1,27 @@
-form#fouaac_shortcode p.fouaac_validation_error {
+form#fouaac-shortcode p.fouaac-validation-error {
     color: red;
 }
 
-form#fouaac_shortcode input.fouaac_validation_error {
+form#fouaac-shortcode input.fouaac-validation-error {
     border:1px solid red;
 }
 
-form#fouaac_shortcode fieldset {
+form#fouaac-shortcode fieldset {
     margin-bottom: 25px;
 }
 
-form#fouaac_shortcode fieldset legend {
+form#fouaac-shortcode fieldset legend {
     padding-bottom: 5px;
     font-size: 18px
 }
 
-form#fouaac_shortcode fieldset label {
+form#fouaac-shortcode fieldset label {
     padding-top: 5px;
     display:block;
     font-size: 14px
 }
 
-form#fouaac_shortcode fieldset p {
+form#fouaac-shortcode fieldset p {
     margin: 0;
     padding: 0
 }
