@@ -70,7 +70,8 @@ class Fouaac_Caption_Creator
             //If the caption-option is 'auto'..
             case 'auto':
                 //And some caption-text is provided, use the text for the caption
-                if ( !empty( $this->get_caption_text() ) ) {
+                $caption_text = $this->get_caption_text();
+                if ( !empty( $caption_text ) ) {
                     $caption = $this->trim_string( $this->get_caption_text() );
                     return $caption;
                 //Otherwise, create an automatic caption
@@ -81,7 +82,7 @@ class Fouaac_Caption_Creator
                     );
                     $caption = $this->title_string( $text );
                     return $caption;
-                };
+                }
             break;
             //If the caption-option is something else, return the empty string
             default:
@@ -99,7 +100,7 @@ class Fouaac_Caption_Creator
 
     private function trim_string( $string ) {
         $trim_string = trim( $string );
-        return $string;
+        return $trim_string;
 
     }
 
