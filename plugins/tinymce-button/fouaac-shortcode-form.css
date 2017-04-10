@@ -1,0 +1,32 @@
+form#fouaac-shortcode .unique-id,
+form#fouaac-shortcode .record-id {
+    display: none;
+}
+
+form#fouaac-shortcode p.fouaac-validation-error {
+    color: red;
+}
+
+form#fouaac-shortcode input.fouaac-validation-error {
+    border:1px solid red;
+}
+
+form#fouaac-shortcode fieldset {
+    margin-bottom: 25px;
+}
+
+form#fouaac-shortcode fieldset legend {
+    padding-bottom: 5px;
+    font-size: 18px
+}
+
+form#fouaac-shortcode fieldset label {
+    padding-top: 5px;
+    display:block;
+    font-size: 14px
+}
+
+form#fouaac-shortcode fieldset p {
+    margin: 0;
+    padding: 0
+}

@@ -26,20 +26,45 @@ Text Domain: finds-org-uk
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Blocks direct access to plugin file
+// Block direct access to plugin file
 defined( 'ABSPATH' ) or exit("Plugin must not be accessed directly.");
 
+/**
+ * ----------
+ * CSS STYLES
+ * ----------
+ */
 
-// Enqueues CSS styles
-add_action( 'wp_enqueue_scripts', 'fouaac_load_style' );
+// Enqueue CSS styles for artefact display
+add_action( 'wp_enqueue_scripts', 'fouaac_load_styles' );
+// Enqueue CSS styles for shortcode popup form display
+add_action( 'admin_enqueue_scripts', 'fouaac_load_form_styles' );
 
-function fouaac_load_style() {
-    wp_register_style( 'fouaac-style', plugins_url('/css/fouaac-style.css', __FILE__) );
-    wp_enqueue_style( 'fouaac-style');
-
+/**
+ * Load CSS styles for artefact display
+ */
+function fouaac_load_styles() {
+    wp_register_style( 'fouaac-display-style', plugins_url('/css/fouaac-style.css', __FILE__) );
+    wp_enqueue_style( 'fouaac-display-style');
 }
 
-// Registers a shortcode [artefact] to display an artefact record in posts
+/**
+ * Load CSS styles for shortcode popup form display
+ *
+ * @TODO This should only load on the specific page it is needed.
+ */
+function fouaac_load_form_styles() {
+    wp_register_style( 'fouaac-form-style', plugins_url('/plugins/tinymce-button/fouaac-shortcode-form.css', __FILE__) );
+    wp_enqueue_style( 'fouaac-form-style');
+}
+
+/**
+ * -------------------
+ * SHORTCODE: ARTEFACT
+ * -------------------
+ */
+
+// Register a shortcode [artefact] to display an artefact record in posts
 add_shortcode( 'artefact', 'fouaac_display_artefact' );
 
 /**
@@ -59,7 +84,7 @@ add_shortcode( 'artefact', 'fouaac_display_artefact' );
  */
 
 function fouaac_display_artefact( $attr ) {
-    // Inserts default attribute values
+    // Insert default attribute values
     $attributes = shortcode_atts( array(
         'id' => '',
         'caption-option' => 'auto',
@@ -68,14 +93,56 @@ function fouaac_display_artefact( $attr ) {
     ),
         $attr, 'artefact'
     );
-    // Loads controller class
+    // Load controller class
     require_once plugin_dir_path( __FILE__ ) . 'controllers/class-fouaac-artefact-controller.php';
     $artefact_controller = new Fouaac_Artefact_Controller( $attributes );
     return $artefact_controller->display_artefact();
 
 }
 
+/**
+ * -----------------------
+ * SHORTCODE EDITOR BUTTON
+ * -----------------------
+ */
 
+// Add action to fire the TinyMCE editor button code after wp has finished loading
+add_action('init', 'fouaac_shortcode_button');
+
+/**
+ * Register button and plugin for TinyMCE button
+ *
+ * Users can click on this button in the TinyMCE visual editor to choose shortcode attributes and insert
+ * the shortcode automatically.
+ */
+function fouaac_shortcode_button() {
+    if ( current_user_can('edit_posts') && current_user_can('edit_pages') ) {
+        add_filter( 'mce_external_plugins', 'fouaac_shortcode_plugin' );
+        add_filter( 'mce_buttons', 'fouaac_register_button' );
+    }
+}
+
+/**
+ * Load the plugin javascript file that creates the new button
+ *
+ * @param array $plugins An array of all plugins.
+ * @return array
+ */
+function fouaac_shortcode_plugin( $plugin_array ) {
+    $plugin_array['fouaac'] = plugin_dir_url(__FILE__) .'plugins/tinymce-button/fouaac-tinymce-button.js';
+    return $plugin_array;
+}
+
+/**
+ * Register a button named 'fouaac' to the editor buttons
+ *
+ * @param array $buttons An array of buttons.
+ * @return array
+ */
+function fouaac_register_button( $buttons ) {
+    array_push( $buttons, 'fouaac' ); // Button name 'fouaac'
+    return $buttons;
+}
 
 
 
