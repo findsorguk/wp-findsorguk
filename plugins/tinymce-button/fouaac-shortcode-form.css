@@ -1,3 +1,8 @@
+form#fouaac-shortcode .unique-id,
+form#fouaac-shortcode .record-id {
+    display: none;
+}
+
 form#fouaac-shortcode p.fouaac-validation-error {
     color: red;
 }
