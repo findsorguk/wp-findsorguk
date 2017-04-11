@@ -1,100 +1,177 @@
-# wp-findsorguk
+# Finds.org.uk Artefacts and Coins
 
-A WordPress plugin that lets you display up-to-date artefacts and coins data on your WordPress blog using the finds.org.uk 
-JSON feeds
+A WordPress plugin that creates <a href="https://en.support.wordpress.com/shortcodes/">shortcodes</a> 
+for displaying up-to-date <a href="https://finds.org.uk/database">finds.org.uk</a> artefacts and coins on your WordPress site. 
 
-# Short code attributes
+![](images/artefact-displayed.png)
 
-The following attributes can be used with the shortcode:
+## Finds.org.uk Open Data
 
-* id - mandatory 
-* caption-option - defaults to auto - optional
-* caption-text - optional and takes a text string
-* figure-size - optional, defaults to medium
+Most images and all public data on finds.org.uk are Creative Commons licensed. 
+Reusing and sharing finds.org.uk Open Data on your website or blog easy with this plugin.
 
-# Example JSON response from finds.org.uk
+## Shortcodes
+
+The simplest possible shortcode just needs the record id and inserts a picture and caption automatically:
+
+`[artefact id=828850]`
+
+You can also specify a caption text and the image size: 
+
+`[artefact id=828850 caption-text="An incomplete post medieval umbonate bridle boss" figure-size=large]`
+
+Or, if you prefer, no caption at all:
+
+`[artefact id=828850 caption-option=none]`
+
+All the images come with copyright information and an attribution.
+
+## Shortcode options
+
+The shortcode takes the following attributes:
+
+* **id** - the record id of the artefact (required)
+* **caption-option** - whether to display a caption or not (optional)
+  * auto - caption is automatically generated from the record or the caption-text provided (default)
+  * none - no caption
+* **caption-text** - the text to display as the caption (optional)
+* **figure-size** - the relative size of the image (_not yet implemented_)
+  * small
+  * medium (default)
+  * large
+
+## Editor button
+
+The plugin installs a button in the editor toolbar to make it easy to insert a shortcode.
+
+![](images/shortcode-button.png)
+
+Insert the cursor in your post where you want the shortcode to appear and press the button.
+
+A popup appears to take your options:
+
+![](images/popup-shortcode-form.png)
+
+You can enter the artefact as:
+
+* URL - e.g. https://finds.org.uk/database/artefacts/record/id/828850
+* Unique ID - which you can find on the artefact record page - e.g. IOW-647A2A
+* Record ID - which is the id found at the end of the URL e.g. 828850
+
+Press 'Insert Shortcode' to check your input and create your shortcode.
+
+Update your post and view it to see the image:
+
+![](images/artefact-displayed-on-post.png)
+
+# Installation
+
+The plugin is not yet available from the WordPress 'Add Plugins' page in your WordPress installation. We hope to make 
+ it available soon!
+
+You will need to install the plugin using git so you will probably need to have sudo access to your server and be an 
+administrator of your WordPress installation.
+
+Navigate to the wp-content/plugins directory of your WordPress installation and clone this repository:
+
+`$ sudo git clone https://github.com/findsorguk/wp-findsorguk`
+
+Go to the 'Plugins' page of your WordPress installation and find 'Finds.org.uk Artefacts and Coins' in the list. 
+To activate the plugin click 'Activate' (or 'Network Activate' if you have a multisite installation and want it to be 
+available to all the sites in your installation).
+
+# How it works
+
+Finds.org.uk provides JSON versions of its artefact records and search results, which are computer readable. 
+The user inserts a shortcode into a post with an artefact record id and the plugin fetches the data for that 
+record from the finds.org.uk JSON feeds.
+
+When you enter an artefact by its 'unique id' (e.g. IOW-647A2A) in the popup form the plugin makes an ajax request 
+to the finds.org.uk search index to extract the 'record id' (i.e. 828850) for you.
+
+## Example JSON response from finds.org.uk
 
 ```
 {
 	"record":[
 		{
-			"id":"840273",
-			"old_findID":"NMS-D3C2BD",
-			"uniqueID":"PAS58DD3C2B001D4B",
-			"objecttype":"HINGE",
-			"classification":null,
+			"id":"828850",
+			"old_findID":"IOW-647A2A",
+			"uniqueID":"PAS589647A2001A99",
+			"objecttype":"BRIDLE BIT",
+			"classification":"Boss",
 			"subclass":null,
-			"length":"14.5",
+			"length":"27",
 			"height":null,
-			"width":"13.5",
-			"weight":null,
-			"thickness":null,
+			"width":"23.9",
+			"weight":"5.03",
+			"thickness":"5.4",
 			"diameter":null,
 			"quantity":"1",
-			"otherRef":"SB022017",
-			"curr_loc":null,
+			"otherRef":"IOW2017-8-25",
+			"curr_loc":"Finder",
 			"discoveryMethod":"1",
 			"treasureID":null,
 			"broadperiod":"POST MEDIEVAL",
-			"numdate1":"1500",
-			"numdate2":"1800",
-			"description":"<p><span>Post-medieval square folded sheet copper alloy hinge plate with two rivet holes, one with an iron rivet, one hinge pivot with part of an iron spindle in the fold. Length 14.5mm. Width 13.5mm. 16th - 18th century. <\/span><\/p>",
+			"numdate1":"1600",
+			"numdate2":"1700",
+			"description":"<p>An incomplete post-Medieval copper-alloy bridle boss (c. 1600-c. 1700).<\/p>\n\n<p>This boss is umbonate in form and is now sub-circular in plan. The centre is domed with a flat border. When complete, the border consisted of evenly spaced pierced lugs but only one now survives complete. At the front, the dome has three incised lines crossing at the centre to form six segments. At the rear the centre is concave with the scar of a spike at the centre.<\/p>\n\n<p>The bridle boss is reddish brown with patches of a greenish buff patina.<\/p>\n\n<p>Length: 27.0mm; width: 23.9mm; thickness: 5.4mm. Weight: 5.03g.<\/p>",
 			"notes":null,
 			"reuse":null,
 			"reusePeriodID":null,
-			"created":"2017-03-30 18:11:07",
-			"updated":"2017-03-30 18:24:12",
+			"created":"2017-02-04 21:29:06",
+			"updated":"2017-02-05 18:55:14",
 			"secwfstage":"4",
 			"findofnote":null,
-			"objecttypecert":"1",
-			"datefound1":"2015-12-15",
-			"datefound2":"2016-12-12",
+			"objecttypecert":"2",
+			"datefound1":"2017-01-04",
+			"datefound2":"2017-01-04",
 			"inscription":null,
 			"museumAccession":null,
 			"subsequentAction":"1",
-			"objectCertainty":"Certain",
+			"objectCertainty":"Probably",
 			"dateFromCertainty":"1",
 			"dateToCertainty":"1",
 			"dateFoundFromCertainty":null,
 			"dateFoundToCertainty":null,
-			"subPeriodFrom":null,
-			"subPeriodTo":null,
-			"objdate1period":"29",
+			"subPeriodFrom":"1",
+			"subPeriodTo":"3",
+			"objdate1period":"36",
 			"objdate2period":"36",
-			"secuid":"PAS58DD3C2B001D4B",
+			"secuid":"PAS589647A2001A99",
 			"material1":"7",
-			"material2":"8",
+			"material2":null,
 			"manmethod":null,
 			"decmethod":null,
 			"decstyle":null,
-			"complete":"4",
+			"complete":"2",
 			"surface":null,
 			"manufactureID":null,
 			"culture":null,
-			"recorderID":"0013EA168E001AD6",
-			"identifier1ID":"0013EA168E001AD6",
-			"identifier2ID":null,
-			"smrRef":"20388",
-			"createdBy":"1988",
-			"updatedBy":"1988",
+			"recorderID":"0013F72EB3001EB0",
+			"identifier1ID":"0013F72EB3001EB0",
+			"identifier2ID":"0013FBB8E4401C75",
+			"smrRef":null,
+			"createdBy":"99",
+			"updatedBy":"99",
 			"hoardcontainer":null,
-			"institution":"NMS",
+			"institution":"IOW",
 			"reason":null,
-			"fullname":"Andrew Rogerson",
+			"fullname":"Frank Basford",
 			"primaryMaterial":"Copper alloy",
 			"primaryBMmaterial":"10627",
-			"secondaryMaterial":"Iron",
-			"secondaryBMmaterial":"11019",
+			"secondaryMaterial":null,
+			"secondaryBMmaterial":null,
 			"decoration":null,
 			"style":null,
 			"manufacture":null,
 			"surfaceTreatment":null,
-			"completeness":"Complete",
-			"preservation":null,
-			"periodFrom":"MEDIEVAL",
-			"seneschalPeriodFrom":"MD",
-			"bmPeriodFrom":"x14221",
-			"periodoPeriodFrom":"p0gjgrsxwzx",
+			"completeness":"Incomplete",
+			"preservation":"Poor",
+			"periodFrom":"POST MEDIEVAL",
+			"seneschalPeriodFrom":"PM",
+			"bmPeriodFrom":"x41047",
+			"periodoPeriodFrom":"p0gjgrs6sgx",
 			"periodTo":"POST MEDIEVAL",
 			"seneschalPeriodTo":"PM",
 			"bmPeriodTo":"x41047",
@@ -104,28 +181,20 @@ The following attributes can be used with the shortcode:
 			"culturePeriodo":null,
 			"cultureBM":null,
 			"discmethod":"Metal detector",
-			"identifier":"Dr Andrew Rogerson",
-			"secondaryIdentifier":null,
-			"recorder":"Dr Andrew Rogerson",
+			"identifier":"Mr Frank Basford",
+			"secondaryIdentifier":"Mr Peter Reavill",
+			"recorder":"Mr Frank Basford",
 			"fromCirca":"Circa",
 			"toCirca":"Circa",
-			"findSpotID":"840143",
-			"countyID":"7238",
-			"parishID":"6966",
-			"districtID":"7016",
-			"regionID":"41425",
-			"fourFigure":"TF7105",
-			"map25k":"TF7105",
-			"map10k":"TF70NW",
-			"knownas":null,
-			"fourFigureLat":"52.61584643",
-			"fourFigureLon":"0.52438686",
-			"woeid":null,
-			"gridlen":"8",
-			"geonamesID":null,
-			"accuracy":"10",
-			"what3words":"paves.eyepieces.geology",
-			"source":"From a paper map",
+			"findSpotID":"828547",
+			"countyID":"25469",
+			"districtID":"25469",
+			"regionID":"41421",
+			"knownas":"Isle of Wight",
+			"gridlen":"10",
+			"accuracy":"1",
+			"what3words":"dwell.grain.hydration",
+			"source":"Generated from computer mapping software",
 			"coinID":null,
 			"obverseDescription":null,
 			"obverseInscription":null,
@@ -181,203 +250,46 @@ The following attributes can be used with the shortcode:
 			"mintOsID":null,
 			"mintGettyID":null,
 			"mintWoeID":null,
-	"record":[
-		{
-			"id":"837209",
-			"old_findID":"LVPL-BCE783",
-			"uniqueID":"PAS58CBCE7800139E",
-			"objecttype":"COIN",
-			"classification":null,
-			"subclass":null,
-			"length":null,
-			"height":null,
-			"width":null,
-			"weight":"2.7",
-			"thickness":null,
-			"diameter":"19",
-			"quantity":"1",
-			"otherRef":null,
-			"curr_loc":null,
-			"discoveryMethod":"1",
-			"treasureID":null,
-			"broadperiod":"ROMAN",
-			"numdate1":"255",
-			"numdate2":"258",
-			"description":"<p>A gold aureus of Gallienus (AD 253-268), joint reign with Valerian I, dating to the period AD 255-258 (Reece period 12). VIRTVS AVGG reverse type depicting Mars walking right holding spear and carrying trophy over shoulder. Mint of Rome. As RIC V.1, p. 76, no. 102; Cohen 1269; Gobl no. 121.<\/p>\n\n<p>Obverse: IMP GALLIENVS P F AVG GERM; laureate and cuirassed bust right.<\/p>\n\n<p><strong>Dimensions: <\/strong>19mm in diameter, 2.7g.<\/p>\n\n<p>One other gold coin of Gallienus, from the joint reign with Valerian, has been recorded as found in Britain (from Canterbury; RIC 70) - R. Bland and X. Loriot, <em>Roman and Early Byzantine Gold Coins found in Britain and Ireland <\/em>(2010), p. 174, no. 265.<\/p>\n\n<p>Roger Bland discusses the rarity of 3rd century coins in his paper 'What happened to gold coinange in the 3rd c. A. D.?. (Preprint, published in Journal of Roman Archaeology 26, 2013, pp. 263-80).<\/p>",
-			"notes":null,
-			"reuse":null,
-			"reusePeriodID":null,
-			"created":"2017-03-17 11:54:32",
-			"updated":"2017-03-23 10:55:54",
-			"secwfstage":"3",
-			"findofnote":"1",
-			"objecttypecert":"1",
-			"datefound1":"2017-02-12",
-			"datefound2":"2017-02-12",
-			"inscription":null,
-			"museumAccession":null,
-			"subsequentAction":"1",
-			"objectCertainty":"Certain",
-			"dateFromCertainty":"1",
-			"dateToCertainty":"1",
-			"dateFoundFromCertainty":null,
-			"dateFoundToCertainty":null,
-			"subPeriodFrom":null,
-			"subPeriodTo":null,
-			"objdate1period":"21",
-			"objdate2period":"21",
-			"secuid":"PAS58CBCE7800139E",
-			"material1":"23",
-			"material2":null,
-			"manmethod":"2",
-			"decmethod":null,
-			"decstyle":null,
-			"complete":"2",
-			"surface":null,
-			"manufactureID":"2",
-			"culture":null,
-			"recorderID":"00148E39435012FB",
-			"identifier1ID":"00148E39435012FB",
-			"identifier2ID":"PAS57FCFBAD00121C",
-			"smrRef":null,
-			"createdBy":"838",
-			"updatedBy":"31097",
-			"hoardcontainer":null,
-			"institution":"LVPL",
-			"reason":"For inclusion in British Numismatic Journal \u2018Coin Register\u2019",
-			"fullname":"Vanessa Oakden",
-			"primaryMaterial":"Gold",
-			"primaryBMmaterial":"10892",
-			"secondaryMaterial":null,
-			"secondaryBMmaterial":null,
-			"decoration":null,
-			"style":null,
-			"manufacture":"Struck or hammered",
-			"surfaceTreatment":null,
-			"completeness":"Incomplete",
-			"preservation":"Good",
-			"periodFrom":"ROMAN",
-			"seneschalPeriodFrom":"RO",
-			"bmPeriodFrom":"x41218",
-			"periodoPeriodFrom":"p0gjgrs69ws",
-			"periodTo":"ROMAN",
-			"seneschalPeriodTo":"RO",
-			"bmPeriodTo":"x41218",
-			"periodoPeriodTo":"p0gjgrs69ws",
-			"reusePeriod":null,
-			"ascribedCulture":null,
-			"culturePeriodo":null,
-			"cultureBM":null,
-			"discmethod":"Metal detector",
-			"identifier":"Ms Vanessa Oakden",
-			"secondaryIdentifier":"Dr Andrew Brown",
-			"recorder":"Ms Vanessa Oakden",
-			"fromCirca":"Circa",
-			"toCirca":"Circa",
-			"findSpotID":"837125",
-			"countyID":"25595",
-			"districtID":"25595",
-			"regionID":"41430",
-			"knownas":"Murton",
-			"gridlen":"10",
-			"accuracy":"1",
-			"what3words":"bunk.spell.strong",
-			"source":"Generated from computer mapping software",
-			"coinID":"407187",
-			"obverseDescription":"Laureate and cuirassed bust right.",
-			"obverseInscription":"IMP GALLIENVS P F AVG GERM",
-			"reverseDescription":"Mars walking right, holding spear, trophy over shoulder.",
-			"reverseInscription":"VIRTVS AVGG",
-			"cciNumber":null,
-			"denominationID":"32",
-			"degreeOfWear":"4",
-			"allenType":null,
-			"vaType":null,
-			"mackType":null,
-			"abcType":null,
-			"bmcType":null,
-			"reeceID":"12",
-			"dieAxis":"1",
-			"moneyer":null,
-			"revtypeID":null,
-			"categoryID":null,
-			"typeID":null,
-			"tribeID":null,
-			"statusID":"1",
-			"rulerQualifier":"1",
-			"denominationQualifier":"1",
-			"mintQualifier":"1",
-			"dieAxisCertainty":"1",
-			"initialMark":null,
-			"reverseMintMark":"-\/\/-",
-			"statusQualifier":"1",
-			"ruler1":"67",
-			"ruler2":null,
-			"mintID":"180",
-			"rrcID":null,
-			"ricID":"ric.5.gall(1).102e",
-			"tribe":null,
-			"ironAgeRegion":null,
-			"ironAgeArea":null,
-			"denomination":"Aureus (Republic\/Empire)",
-			"nomismaDenomination":"aureus",
-			"dbpediaDenomination":null,
-			"bmDenomination":null,
-			"primaryRuler":"Gallienus (Joint reign)",
-			"viaf":"55453496",
-			"rulerDbpedia":"Gallienus",
-			"nomismaRulerID":"gallienus",
-			"secondaryRuler":null,
-			"periodName":"Period 12",
-			"dateRange":"238-260",
-			"mintName":"Rome",
-			"nomismaMintID":"rome",
-			"pleiadesID":"423025",
-			"mintGeonamesID":"3169070",
-			"mintWoeid":"12843585",
-			"mintOsID":null,
-			"mintGettyID":"7000874",
-			"mintWoeID":"12843585",
-			"mintDbPediaID":"Ancient_Rome",
-			"mintWhat3Words":"snow.occupy.richly",
-			"mintBritMuseumID":"x25706",
-			"wear":"Hardly worn: extremely fine",
-			"nomismaWear":"little_or_no_wear",
-			"dieAxisName":"1 o'clock",
+			"mintDbPediaID":null,
+			"mintWhat3Words":null,
+			"mintBritMuseumID":null,
+			"wear":null,
+			"nomismaWear":null,
+			"dieAxisName":null,
 			"category":null,
 			"type":null,
 			"moneyerID":null,
 			"nomismaMoneyer":null,
-			"emperorID":"75",
-			"romanMintID":"8",
+			"emperorID":null,
+			"romanMintID":null,
 			"reverseType":null,
-			"status":"Regular",
+			"status":null,
 			"jettonClass":null,
 			"jettonType":null,
 			"jettonGroup":null,
-			"thumbnail":"607695",
-			"filename":"LVPLBCE783.jpg",
-			"filesize":"2074845",
-			"imageLabel":"Roman aureus of Gallienus",
-			"imageCopyrightHolder":"National Museums Liverpool ",
-			"imageLicense":"Attribution License",
-			"imagedir":"images\/voakden\/",
-			"region":"Yorkshire and the Humber",
+			"thumbnail":"600333",
+			"filename":"IOW2017825.JPG",
+			"filesize":"2129070",
+			"imageLabel":"Post-Medieval Bridle Boss",
+			"imageCopyrightHolder":"The Portable Antiquities Scheme",
+			"imageLicense":"Attribution-ShareAlike License",
+			"imagedir":"images\/fbasford\/",
+			"region":"South East",
 			"rallyID":null,
 			"rallyName":null,
 			"rallyDateFrom":null,
 			"rallyDateTo":null,
-			"landuse":"Character undetermined",
+			"landuse":"Operations to a depth greater than 0.25m",
 			"landvalue":"Cultivated land",
 			"regionType":"European Region",
 			"countyType":"Unitary Authority",
-			"county":"York",
+			"county":"Isle of Wight",
 			"districtType":"Unitary Authority",
-			"district":"York",
+			"district":"Isle of Wight",
 			"parishType":"Civil Parish",
 			"subsequentActionTerm":"Returned to finder",
-			"bmThesObject":"6089",
-			"seneschalObject":"95423"
+			"bmThesObject":null,
+			"seneschalObject":"95671"
 		}
 	]
 }
@@ -389,4 +301,9 @@ Mary Chester-Kadwell, The British Museum
 
 # License 
 
-GPL
+GPL v3
+
+# To do
+
+* Caching
+* Image size implementation
