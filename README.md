@@ -8,7 +8,7 @@ for displaying up-to-date <a href="https://finds.org.uk/database">finds.org.uk</
 ## Finds.org.uk Open Data
 
 Most images and all public data on finds.org.uk are Creative Commons licensed. 
-Reusing and sharing finds.org.uk Open Data on your website or blog easy with this plugin.
+Reusing and sharing finds.org.uk Open Data on your website or blog is easy with this plugin.
 
 ## Shortcodes
 
@@ -66,18 +66,25 @@ Update your post and view it to see the image:
 
 # Installation
 
-The plugin is not yet available from the WordPress 'Add Plugins' page in your WordPress installation. We hope to make 
- it available soon!
+The plugin is not yet available from the 'Add Plugins' page in your WordPress installation. However, we hope to make it available soon!
+ 
+There are two different ways install from this Github repository. You'll need to be an administrator of your WordPress installation to 
+do this.
+ 
+ 1. Click on the green 'Clone or download' button in this repository and choose Download zip. 
+ 
+    Then go to the 'Plugins > Add New' page of your WordPress installation, click the 'Upload Plugin' button and 
+    choose the zip file you just downloaded. You won't get all the updates from the repo this way, but this is the 
+    simplest way to install at the moment.
+ 
+ 2. Alternatively, if you have direct access to your server (and probably sudo access) you can install the plugin via git:
+ 
+    Navigate to the wp-content/plugins directory of your WordPress installation and clone this repository:
+ 
+    `$ git clone https://github.com/findsorguk/wp-findsorguk finds-org-uk-artefacts-and-coins`
 
-You will need to install the plugin using git so you will probably need to have sudo access to your server and be an 
-administrator of your WordPress installation.
-
-Navigate to the wp-content/plugins directory of your WordPress installation and clone this repository:
-
-`$ sudo git clone https://github.com/findsorguk/wp-findsorguk`
-
-Go to the 'Plugins' page of your WordPress installation and find 'Finds.org.uk Artefacts and Coins' in the list. 
-To activate the plugin click 'Activate' (or 'Network Activate' if you have a multisite installation and want it to be 
+    Go to the 'Plugins' page of your WordPress installation and find 'Finds.org.uk Artefacts and Coins' in the list. 
+    To activate the plugin click 'Activate' (or 'Network Activate' if you have a multisite installation and want it to be 
 available to all the sites in your installation).
 
 # How it works
