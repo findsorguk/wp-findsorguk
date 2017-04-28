@@ -16,9 +16,11 @@ The simplest possible shortcode just needs the record id and inserts a picture a
 
 `[artefact id=828850]`
 
-You can also specify a caption text and the image size: 
+You can also specify a caption text and the image size*: 
 
 `[artefact id=828850 caption-text="An incomplete post medieval umbonate bridle boss" figure-size=large]`
+
+*image size is not yet implemented.
 
 Or, if you prefer, no caption at all:
 
@@ -312,5 +314,13 @@ GPL v3
 
 # To do
 
-* Caching
-* Image size implementation
+* Caching of data to prevent unnecessary get requests and so speed up posts and pages
+* Image size options
+* Admin option to suppress error messages if desired
+
+# Known issues
+
+* When two or more images are available on an artefact record it is not possible to choose which image is displayed 
+by the shortcode, because only one is made available in the JSON by finds.org.uk, and typically it is not the main image.
+* When images are deleted or replaced on finds.org.uk the JSON is not always updated, therefore sometimes 
+an image will display as broken by the shortcode even though an image appears correctly on the original record itself.
