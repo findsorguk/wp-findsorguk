@@ -261,6 +261,14 @@ jQuery(function ($) {
         var recordId = '';
         var url = $("#url").val().trim();
 
+        //Inline polyfill for Internet Explorer and other browsers without ES6 support
+        if (!String.prototype.startsWith) {
+            String.prototype.startsWith = function(searchString, position){
+                position = position || 0;
+                return this.substr(position, searchString.length) === searchString;
+            };
+        }
+
         // Check url starts with correct prefix
         if (url.startsWith(prefixWithHttps)) {
             prefix = prefixWithHttps;
